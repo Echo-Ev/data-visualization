@@ -62,18 +62,17 @@ View(titleType_by_decade)
 library(ggplot2)
 
 
-# 使用更新后的ggplot代码
 p3<-ggplot(titleType_by_decade, aes(x = decade, y = totalVotes, colour = titleType, size = AverageRating, alpha = 0.5)) +
   geom_point() +
-  scale_y_log10() +  # 继续使用对数缩放
-  scale_size(range = c(1, 6), breaks = seq(5, 8, 0.5)) +  # 调整点的大小范围和评分间隔
-  scale_alpha(guide = FALSE) +  # 添加透明度但不在图例中显示
+  scale_y_log10() +  # logarithmic scaling
+  scale_size(range = c(1, 6), breaks = seq(5, 8, 0.5)) +  # Adjust the size range and rating interval of the points
+  scale_alpha(guide = FALSE) +  
   theme_minimal() +
   labs(x = "Decade",
        y = "Total Votes (log scale)",
        size = "Average Rating",
        colour = "Title Type") +
-  theme(legend.position = "right")  # 调整图例位置
+  theme(legend.position = "right")  
 p3
 
 result_1<-select(result,tconst,titleType,primaryTitle,originalTitle,startYear,genres,averageRating,numVotes) #Select the relevant columns
@@ -113,7 +112,7 @@ gather_country <- gather_country %>%
   left_join(language_to_country, by  = "Language") %>%
   rename(Country = Country)
 View(gather_country)
-#将语言转化为国家
+#Translate language into country
 
 install.packages("rnaturalearth")
 install.packages("rnaturalearthdata")
@@ -121,21 +120,21 @@ install.packages("rnaturalearthdata")
 library(rnaturalearth)
 library(rnaturalearthdata)
 
-# 获取地图数据
+# Obtain map data
 world_map <- ne_countries(scale = "medium", returnclass = "sf")
 
 
-# 合并到地图数据
+# Merge into map data
 world_map <- left_join(world_map, gather_country, by = c("name" = "Country"))
 
 library(ggplot2)
 library(sf)
-library(viridis)  # 导入viridis包，用于更漂亮的颜色方案
+library(viridis)  # Import viridis package for more beautiful color schemes
 
 p4<-ggplot(data = world_map) +
   geom_sf(aes(fill = TotalVotes), color = "white") +
-  scale_fill_viridis_c(name = "Total Votes", trans = "log10",  # 添加对数转换
-                       labels = scales::comma) +  # 使用逗号格式化标签
+  scale_fill_viridis_c(name = "Total Votes", trans = "log10",  # Add logarithmic conversion
+                       labels = scales::comma) +  # Format tags with commas
   labs(title = "World Map Colored by Movie Votes",
        fill = "Total Votes") +
   theme_minimal()  
